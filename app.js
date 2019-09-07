@@ -69,8 +69,9 @@ app.set('port', (process.env.PORT || 5000))
  * 
  */
 app.get('/', (req, res) => {
-    res.redirect('/fhash');
+    // res.redirect('/fhash');
     // res.send("hey")
+    res.sendFile(path.join(__dirname + '/views/data-collection.html'));
 });
 
 
@@ -146,7 +147,7 @@ app.get('/api/:version/analytics.js', (req, res) => {
     if (v == "v1") {
         res.sendFile(path.join(__dirname + '/libs/analytics.min.js'));
     } else {
-        res.status(400).send({success:false, error:"Invalid Version!"});
+        res.status(400).send({ success: false, error: "Invalid Version!" });
     }
 });
 
@@ -220,61 +221,69 @@ app.post('/api/:version/track', (req, res) => {
     var v = req.params.version;
     if (v == "v1") {
         // timestamp, message_type, ip, method, route, hash
-        var rid = req.body.resource_id;
-        var data = {
-            "timestamp": Date.now(),
-            "message_type": (req.body.message_type != null) ? req.body.message_type : "info",
-            "ip": getIp(req),
-            "method": (req.body.method != null) ? req.body.method : "get",
-            "route_path": req.body.route_path,
-            "hash": req.fingerprint.hash
-        }
-
-        if (!data.route_path) {
-            res.status(400).send({
-                success: false,
-                error: "Please provide a valid route_path."
-            })
-        }
         try {
-            Log.findByRid(rid, (d) => {
-                if (d) {
-                    console.log(d)
-                    Log.addLogByRid(rid, data, (err, doc) => {
-                        if (err) {
-                            res.status(400).send({
-                                success: false,
-                                error: err
-                            })
-                        } else {
-                            if (doc) {
-                                res.status(200).send({
-                                    success: true,
-                                    data: doc.toJSON()
+            var rid = req.body.resource_id;
+            var data = {
+                "timestamp": Date.now(),
+                "message_type": (req.body.message_type != null) ? req.body.message_type : "info",
+                "ip": getIp(req),
+                "method": (req.body.method != null) ? req.body.method : "get",
+                "route_path": req.body.route_path,
+                "hash": req.fingerprint.hash
+            }
+
+            if (!data.route_path) {
+                res.status(400).send({
+                    success: false,
+                    error: "Please provide a valid route_path."
+                })
+            }
+            try {
+                Log.findByRid(rid, (d) => {
+                    if (d) {
+                        console.log(d)
+                        Log.addLogByRid(rid, data, (err, doc) => {
+                            if (err) {
+                                res.status(400).send({
+                                    success: false,
+                                    error: err
                                 })
                             } else {
-                                res.status(400).send({
-                                    success: true,
-                                    error: 'Couldn\'t add new log!'
-                                })
+                                if (doc) {
+                                    res.status(200).send({
+                                        success: true,
+                                        data: doc.toJSON()
+                                    })
+                                } else {
+                                    res.status(400).send({
+                                        success: true,
+                                        error: 'Couldn\'t add new log!'
+                                    })
+                                }
                             }
-                        }
-                    })
-                } else {
-                    res.status(400).send({
-                        success: false,
-                        error: "Please provide a valid resource_id."
-                    })
-                }
-            })
+                        })
+                    } else {
+                        res.status(400).send({
+                            success: false,
+                            error: "Please provide a valid resource_id."
+                        })
+                    }
+                })
+            } catch (e) {
+                res.status(400).send({
+                    success: false,
+                    error: e
+                })
+            }
         } catch (e) {
+            console.log(e);
             res.status(400).send({
                 success: false,
                 error: e
             })
         }
     } else {
-        res.status(400).send({success:false, error:"Invalid Version!"});
+        res.status(400).send({ success: false, error: "Invalid Version!" });
     }
 });
 
@@ -377,7 +386,7 @@ app.post('/api/:version/registerResource', (req, res) => {
             }
         })
     } else {
-        res.status(400).send({success:false, error:"Invalid Version!"});
+        res.status(400).send({ success: false, error: "Invalid Version!" });
     }
 });
 
@@ -441,8 +450,8 @@ app.post('/api/:version/registerResource', (req, res) => {
 app.get('/api/:version/getLogs', (req, res) => {
     var v = req.params.version;
     if (v == "v1") {
-        var resource_id = (req.body. resource_id!=null)? req.body.resource_id: req.query.resource_id;
-        var secret = (req.body.secret!=null)? req.body.secret: req.query.secret;
+        var resource_id = (req.body.resource_id != null) ? req.body.resource_id : req.query.resource_id;
+        var secret = (req.body.secret != null) ? req.body.secret : req.query.secret;
 
         if (!resource_id) {
             res.status(400).send({
@@ -466,11 +475,11 @@ app.get('/api/:version/getLogs', (req, res) => {
                 });
             }
         }).catch((e) => {
-            res.status(400).send({success:false, error:"Invalid Credentials!"});
+            res.status(400).send({ success: false, error: "Invalid Credentials!" });
         });
 
     } else {
-        res.status(400).send({success:false, error:"Invalid Version!"});
+        res.status(400).send({ success: false, error: "Invalid Version!" });
     }
 
 });
@@ -561,10 +570,10 @@ app.delete('/api/:version/removeLogs', (req, res) => {
                 })
             }
         }).catch((e) => {
-            res.status(400).send({success:false, error:"Invalid Credentials!"});
+            res.status(400).send({ success: false, error: "Invalid Credentials!" });
         });
     } else {
-        res.status(400).send({success:false, error:"Invalid Version!"});
+        res.status(400).send({ success: false, error: "Invalid Version!" });
     }
     // vae secret = 
 });
@@ -652,10 +661,10 @@ app.delete('/api/:version/removeResource', (req, res) => {
                 })
             }
         }).catch((e) => {
-            res.status(400).send({success:false, error:"Invalid Credentials!"});
+            res.status(400).send({ success: false, error: "Invalid Credentials!" });
         });
     } else {
-        res.status(400).send({success:false, error:"Invalid Version!"});
+        res.status(400).send({ success: false, error: "Invalid Version!" });
     }
 });
 
@@ -676,7 +685,7 @@ app.get('/api/:version/docs', (req, res) => {
     if (v == "v1") {
         res.sendFile(path.join(__dirname + '/documentation/index.html'));
     } else {
-        res.status(400).send({success:false, error:"Invalid Version!"});
+        res.status(400).send({ success: false, error: "Invalid Version!" });
     }
 })
 

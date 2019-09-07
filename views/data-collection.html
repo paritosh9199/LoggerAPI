@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="A simple API for Data Aalytics!!">
+    <meta name="author" content="">
+
+    <title>AnalyticAPI</title>
+    
+    <!-- Bootstrap Core CSS -->
+    <!-- <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet"> -->
+
+    <!-- Custom Fonts -->
+    <!-- <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css"> -->
+
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+
+    <!-- <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css"> -->
+
+
+    <!-- <link href="vendor/simple-line-icons/css/simple-line-icons.css" rel="stylesheet"> -->
+
+    <!-- Custom CSS -->
+    <!-- <link href="css/stylish-portfolio.min.css" rel="stylesheet"> -->
+    <style>
+        .masthead {
+            margin-top: 20vh;
+        }
+
+        body {
+            color: #fff;
+            background: #03A9F4;
+            /* background: rgb(255, 255, 255); */
+            width: 100vw;
+        }
+
+        .btn-primary {
+            background: #536DFE;
+            /* -webkit-box-shadow: 3px 3px 5px 6px #ccc;
+            -moz-box-shadow: 3px 3px 5px 6px #ccc;
+            box-shadow: 3px 3px 5px 6px #ccc; */
+        }
+
+        code.ref-code {
+            color: #02c0ad;
+            background: rgb(19, 19, 19);
+            padding: 6px;
+            border-radius: 6px;
+        }
+
+        code.ref-code.error {
+            color: #ff0000;
+            background: rgb(19, 19, 19);
+            padding: 6px;
+            border-radius: 6px;
+        }
+
+        span.ref p {
+            font-size: 16px;
+        }
+    </style>
+
+</head>
+
+<body id="page-top">
+
+    <!-- Navigation -->
+
+    <!-- Header -->
+    <header class="masthead d-flex">
+        <div class="container text-center my-auto">
+            <h1 class="mb-1">AnalyticsAPI</h1>
+            <h3 class="mb-5">
+                <em>A simple API for Data Aalytics!!</em>
+            </h3>
+            <br>
+            <!-- <a class="btn btn-primary btn-xl js-scroll-trigger" href="#about">Find Out More</a> -->
+            <span class="ref success" style="display:none">
+                <p>Thank you for contributing towards the development of this API!</p>
+                <p>Your reference code: <br>
+                    <code class="ref-code success"></code>
+                </p>
+            </span>
+
+            <span class="ref err" style="display:none">
+                <code class="ref-code error">Oops! We hit a snag. Please Try again later.</code>
+            </span>
+        </div>
+        <div class="overlay"></div>
+    </header>
+
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function () {
+            console.log("ready!");
+
+            function makeSamplePaths(n) {
+                var paths = []
+
+                for (var i = 0; i < n; i++) {
+                    paths.push(`/path${i + 1}`);
+                }
+
+                return paths;
+            }
+
+
+            function makeid(len = 6) {
+                var text = "";
+                var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+                for (var i = 0; i < len / 2; i++) {
+                    text += possible.charAt(Math.floor(Math.random() * possible.length));
+                }
+                return text;
+            }
+
+
+            function analytics(data) {
+
+                $.ajax({
+                    type: 'POST',
+                    url: "/api/v1/track",
+                    data: JSON.stringify(data),
+                    contentType: "application/json",
+                    dataType: "json",
+                    success: function (resultData) {
+                        document.querySelector('code.ref-code').innerHTML = ref_id;
+                        document.querySelector('span.ref.success').style.display = "block";
+                    },
+                    error: function (arg1,arg2,arg3) {
+                        // document.querySelector('code.ref-code').innerHTML = ref_id;
+                        console.log({arg1,arg2,arg3})
+                        document.querySelector('span.ref.err').style.display = "block";
+                    }
+                });
+            }
+
+            var ref_id = `REF-${makeid(20)}-${makeid(20)}`;
+            var n = 20;
+            var paths = makeSamplePaths(n);
+            var min = 0, max = n - 1;
+            var path = paths[Math.floor(Math.random() * (+max - +min)) + +min]
+            var rid = "RID-77bgif-czNYCM-zOea6D";
+            var data = {
+                "message_type": ref_id,
+                "method": "get",
+                "route_path": path,
+                "resource_id": rid
+            }
+            // alert(data)
+            console.log(data)
+            analytics(data)
+            // document.querySelector('code.ref-code.success').innerHTML = ref_id;
+            // document.querySelector('span.ref').style.display = "block";
+        });
+    </script>
+</body>
+
+</html>
