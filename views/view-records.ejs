@@ -41,7 +41,7 @@
             box-shadow: 3px 3px 5px 6px #ccc; */
         }
 
-        code {
+        code, .data-sample-modal .data2 {
             background: rgb(19, 19, 19);
             color: #02c0ad;
             padding: 6px;
@@ -79,7 +79,7 @@
             /* border-radius: 6px; */
         }
 
-        .btn-success {
+        #login-btn {
             margin-top: 10px;
             width: 100%;
             color: #fff;
@@ -87,7 +87,7 @@
             background-image: linear-gradient(-180deg, #34d058, #28a745 90%);
         }
 
-        .btn-success:hover {
+        #login-btn:hover {
             background-color: #269f42;
             background-image: linear-gradient(-180deg, #2fcb53, #269f42 90%);
             background-position: -.5em;
@@ -118,9 +118,10 @@
              */
             overflow-x: hidden;
             border-radius: 6px;
-            padding: 5px;
+            /* padding: 5px; */
             line-height: 1.7;
-            margin: 5px;
+            /* margin: 5px; */
+            margin-top: 20px;
         }
 
         .string {
@@ -145,6 +146,45 @@
 
         .download-label {
             font-size: 15px;
+        }
+
+        #refresh-btn,
+        #lg-show-btn,
+        #lg-hide-btn {
+            float: right;
+            /* margin-left:auto;  */
+            /* margin-right:0; */
+        }
+
+        .type-anim {
+            border-right: .15em solid rgb(22, 22, 22);
+            width: auto;
+            animation:
+                blink-caret .75s step-end infinite;
+        }
+
+        @keyframes blink-caret {
+
+            from,
+            to {
+                border-color: transparent
+            }
+
+            50% {
+                border-color: rgb(15, 15, 15);
+            }
+        }
+
+        .refresh-dialogue {
+            display: inline;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        .data-sample-modal, data-sample-modal code{
+            width: 100%;
+        }
+        .data-sample-modal{
+            margin-top: 20px;
         }
     </style>
 
@@ -197,19 +237,38 @@
             <div class="col-md-12">
                 <div class="dashboard">
                     <div class="px-sm-3 px-md-4 px-lg-4 py-sm-3 py-md-4 py-lg-4 p-3 p-4">
-                        <h2>LoggerAPI Console</h2>
+                        <div style="width:100%">
+                            <h2 class="mb-2" style="display:inline">LoggerAPI Console</h2>
+                            <button id="refresh-btn" class="btn btn-primary">Refresh</button>
+                        </div>
                         <hr>
-                        <p>ResourceID: <code class="res-id">something</code></p>
-                        <p>Number of Logs: <code class="log-entry"></code></p>
-                        <br>
-                        <strong class="download-label">Download Data: </strong><button id="download-btn"
-                            class="btn btn-info">Download as JSON</button>
-                        <br><br>
-                        <h3>Logs Data:</h3>
-                        <pre>
-                        <div class="data"></div>
-                        </pre>
+                        <span class="refresh-modal" style="display: none">
+                            <h3 class="refresh-dialogue">Refreshing..!</h3>
+                        </span>
+                        <div class="dash-data-container">
+                            <p>ResourceID: <code class="res-id"></code></p>
+                            <p>Number of Logs: <code class="log-entry"></code></p>
+                            <br>
+                            <strong class="download-label">Download Data: </strong><button id="download-btn"
+                                class="btn btn-info">Download as JSON</button>
+                            <br><br>
 
+                            <div style="width:100%">
+                                <h3 class="mb-2" style="display:inline">Logs Data:</h2>
+                                    <button id="lg-show-btn" class="btn btn-success" >Show</button>
+                                    <button id="lg-hide-btn" class="btn btn-danger" style="display: none;">Hide</button>
+                            </div>
+                            <div class="data-sample-modal" >
+                                <div class="data2">
+                                    Data...
+                                </div>
+                            </div>
+                            <div class="div-data-pre" style="display: none">
+                            <pre class="data-pre" >
+                                <div class="data"></div>
+                            </pre>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -229,30 +288,83 @@
     <script>
         $(document).ready(function () {
             console.log("ready!");
+            
+            function startAnimation(el, string, repeat = 20) {
+                var e = document.querySelector(el);
+                e.innerHTML = string;
+                e.classList.add('type-anim');
+                var l = string.length;
+                var i = 0, j = 0;
+                var s = string.split('');
+                // var w = e.style.width;
+                w = 1;
+                var n = setInterval(function () {
+                    e.innerHTML = "";
+                    i = 0;
+                    // e.style.width = 1;
+                    var t = setInterval(function () {
+                        e.innerHTML += s[i];
+                        i++;
+                        // e.style.width++;
+                        if (i >= l) {
+                            clearInterval(t);
+                        }
+                    }, 100);
+                    j++;
+                    if (j >= repeat) {
+                        clearInterval(n);
+                    }
+                }, l * 100 + 1000);
 
-            function handleCredentials(){
+                return n;
+            }
+
+            function handleCredentials() {
                 var r = localStorage.getItem('r')
                 var s = localStorage.getItem('s')
-                if(r!=null){
+                if (r != null) {
                     document.getElementById('inp-rid').value = r
                 }
-                if(s!=null){
+                if (s != null) {
                     // document.getElementById('inp-secret').type="text";
                     document.getElementById('inp-secret').value = s;
                     // document.getElementById('inp-secret').setAttribute("type", "password"); 
                 }
             }
 
-            function saveCredentials(){
+            function saveCredentials() {
                 var r = document.getElementById('inp-rid').value;
                 var s = document.getElementById('inp-secret').value;
-                if(r!=null){
-                    localStorage.setItem('r',r)
+                if (r != null) {
+                    localStorage.setItem('r', r)
                 }
-                if(s!=null){
-                    localStorage.setItem('s',s)
+                if (s != null) {
+                    localStorage.setItem('s', s)
                 }
             }
+
+            function  dataDisplayHandler(data_display){
+                var sb = document.querySelector('#lg-show-btn');
+                var hb = document.querySelector('#lg-hide-btn');
+                var sd = document.querySelector(".data-sample-modal")
+                var td = document.querySelector(".div-data-pre")
+                
+                if(data_display == 0){
+                    hb.style.display="none";
+                    sb.style.display="block";
+
+                    td.style.display="none";
+                    sd.style.display="block";
+                    
+                }else{
+                    sb.style.display="none";
+                    hb.style.display="block";
+
+                    sd.style.display="none";
+                    td.style.display="block";
+                }
+            }
+
             function downloadObjectAsJson(exportObj, exportName) {
                 var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj));
                 var downloadAnchorNode = document.createElement('a');
@@ -283,7 +395,7 @@
             }
 
 
-            function analytics() {
+            function analytics(refresh = 0, anim = null) {
                 var data = {
                     "resource_id": document.getElementById('inp-rid').value,
                     "secret": document.getElementById('inp-secret').value
@@ -296,7 +408,8 @@
                     dataType: "json",
                     success: function (resultData, arg2, arg3) {
                         console.log({ resultData, arg2, arg3 })
-                        document.querySelector('.dashboard .data').innerHTML = syntaxHighlight(JSON.stringify({ logs: resultData.data.log }, undefined, 4));
+
+                        document.querySelector('.dashboard .data-pre .data').innerHTML = syntaxHighlight(JSON.stringify({ logs: resultData.data.log }, undefined, 4));
                         document.querySelector('.res-id').innerHTML = data.resource_id;
                         document.querySelector('.log-entry').innerHTML = resultData.data.log.length;
                         document.getElementById('download-btn').addEventListener('click', function () {
@@ -304,7 +417,13 @@
                         })
                         document.querySelector('.dash-container').style.display = "block";
                         document.querySelector('.lg-container').style.display = "none"
-
+                        if (refresh == 1) {
+                            document.querySelector('.dash-data-container').style.display = "block";
+                            document.querySelector('.refresh-modal').style.display = "none";
+                            //stops animation
+                            if (anim)
+                                clearInterval(anim);
+                        }
                     },
                     error: function (arg1, arg2, arg3) {
                         // document.querySelector('code.ref-code').innerHTML = ref_id;
@@ -333,11 +452,24 @@
             // document.querySelector('span.ref').style.display = "block";
             handleCredentials();
             document.getElementById('login-btn').addEventListener('click', function () {
-                if(document.getElementById('remember-me').checked){
+                if (document.getElementById('remember-me').checked) {
                     // alert('saving cerdentials');
                     saveCredentials()
                 }
                 analytics();
+            })
+
+            document.getElementById('refresh-btn').addEventListener('click', function () {
+                document.querySelector('.dash-data-container').style.display = "none";
+                document.querySelector('.refresh-modal').style.display = "block";
+                var anim = startAnimation('.refresh-dialogue', "Refreshing...!", 20)
+                analytics(1, anim);
+            })
+            document.getElementById('lg-show-btn').addEventListener('click', function () {
+                dataDisplayHandler(1);
+            })
+            document.getElementById('lg-hide-btn').addEventListener('click', function () {
+                dataDisplayHandler(0);
             })
         });
     </script>
