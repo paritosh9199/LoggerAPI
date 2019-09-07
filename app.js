@@ -1,7 +1,7 @@
 var { env, makeid } = require('./config/config');
 const express = require('express');
 const app = express();
-// const ejs = require('ejs')
+const ejs = require('ejs')
 const cors = require('cors');
 const bodyParser = require('body-parser');
 // const _ = require('lodash');
@@ -55,7 +55,8 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 app.use(bodyParser.json());
-// app.set('views', __dirname + '/views');
+app.set('views', __dirname + '/views');
+app.set('view engine', 'ejs');
 app.use('/api/v1/docs', express.static(__dirname + '/documentation'));
 app.set('port', (process.env.PORT || 5000))
 
@@ -71,7 +72,19 @@ app.set('port', (process.env.PORT || 5000))
 app.get('/', (req, res) => {
     // res.redirect('/fhash');
     // res.send("hey")
-    res.sendFile(path.join(__dirname + '/views/data-collection.html'));
+    res.render('data-collection');
+});
+
+app.get('/console', (req, res) => {
+    // res.redirect('/fhash');
+    // res.send("hey")
+    var rid = (req.body.resource_id != null) ? req.body.resource_id : req.query.r;
+    var secret = (req.body.secret != null) ? req.body.secret : req.query.s;
+    var data = {
+        r: rid,
+        s: secret
+    }
+    res.render('view-records', data);
 });
 
 
@@ -484,6 +497,97 @@ app.get('/api/:version/getLogs', (req, res) => {
 
 });
 
+/**
+ * @api {post} /api/:version/getLogs GetLogs No-Cache secure Route
+ * @apiVersion 1.0.0
+ * @apiGroup Analytics
+ * @apiDescription Use this route to get the tracking logs of a resource. This requires the usage of <code>resource_id</code> and <code>secret</code>.
+ * 
+ <br> Sample snapshot of input data to be sent: <br><code>
+{<br>
+&nbsp;&nbsp;"resource_id": \<ResourceID\>,<br>
+&nbsp;&nbsp;"secret": \<Secret\><br>
+}</code><br>
+
+ <br> Sample snapshot of <code>LogArray</code> Element: <br><code>
+{<br>
+&nbsp;&nbsp;"timestamp": \<Timestamp\>,<br>
+&nbsp;&nbsp;"message_type": \<MessageType\>,<br>
+&nbsp;&nbsp;"_id": \<ObjectID\>,<br>
+&nbsp;&nbsp;"ip": \<IPv4\>,<br>
+&nbsp;&nbsp;"method": \<Method\>,<br>
+&nbsp;&nbsp;"route_path": \<RoutePath\>,<br>
+&nbsp;&nbsp;"hash": \<Hash\><br>
+} </code><br>
+
+
+ * @apiParam {String} version="v1" Version of the API.
+ * @apiParam {String} resource_link Link of the online resource.
+ * @apiParam {String} secret Secret Passkey associated with the Resource.
+ *
+ * @apiSuccess {Boolean} success Success/failure of operaton.
+ * @apiSuccess {Object} message (Optional) Any status messages regarding the operation to be performed.  
+ * @apiSuccess {Object} data It contains the LogArray Object.
+ * 
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "success": true,
+ *       "data": {
+ *          "log": [<LogsArray>]
+ *       },
+ *       "message": <Message>
+ *     }
+ * 
+ * @apiError InvalidVersion The <code> :version </code> is incorrect
+ * @apiError InvalidResourceId The <code>resource_id</code>  is invalid or <code>null</code>
+ * @apiError InvalidSecret The <code>secret</code> is invalid or <code>null</code>
+ * @apiError error <code>\<Message\></code> contains more information about the error occured.
+ * 
+ * @apiErrorExample {json} Error-Response:
+ *     HTTP/1.1 4XX Error 
+ *     {
+ *        "success": false,
+ *        "error": <Message>
+ *     }
+ * 
+ */
+app.post('/api/:version/getLogs', (req, res) => {
+    var v = req.params.version;
+    if (v == "v1") {
+        var resource_id = (req.body.resource_id != null) ? req.body.resource_id : req.query.resource_id;
+        var secret = (req.body.secret != null) ? req.body.secret : req.query.secret;
+
+        if (!resource_id) {
+            res.status(400).send({
+                success: false,
+                error: "Please provide a valid RESOURCE ID (rid)."
+            })
+        }
+
+        if (!secret) {
+            res.status(400).send({
+                success: false,
+                error: "Please provide a valid secret."
+            })
+        }
+
+        Log.findByCredentials(resource_id, secret).then((doc) => {
+            if (doc) {
+                res.status(200).send({
+                    success: true,
+                    data: doc.toLog()
+                });
+            }
+        }).catch((e) => {
+            res.status(400).send({ success: false, error: "Invalid Credentials!" });
+        });
+
+    } else {
+        res.status(400).send({ success: false, error: "Invalid Version!" });
+    }
+
+});
 
 /**
  * @api {delete} /api/:version/removeLogs RemoveLogs Route

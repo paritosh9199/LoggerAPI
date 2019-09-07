@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="A simple API for Data Aalytics!!">
+    <meta name="author" content="">
+
+    <title>AnalyticAPI</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,500&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <style>
+        .masthead {
+            margin-top: 20vh;
+        }
+
+        body {
+            /* color: #fff; */
+            overflow-x: hidden;
+            font-family: 'Roboto Mono', monospace;
+            /* font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol; */
+            font-size: 14px;
+            line-height: 1.5;
+            color: #24292e;
+
+            background: #03A9F4;
+            /* background: rgb(255, 255, 255); */
+            width: 100vw;
+        }
+
+        .btn-primary {
+            background: #536DFE;
+            /* -webkit-box-shadow: 3px 3px 5px 6px #ccc;
+            -moz-box-shadow: 3px 3px 5px 6px #ccc;
+            box-shadow: 3px 3px 5px 6px #ccc; */
+        }
+
+        code {
+            background: rgb(19, 19, 19);
+            padding: 6px;
+            border-radius: 6px;
+        }
+
+        code.ref-code {
+            color: #02c0ad;
+        }
+
+        code.lg-ref-code.error {
+            color: #ff0000;
+        }
+
+        span.ref p {
+            font-size: 16px;
+        }
+
+        .login,
+        .dashboard {
+            color: #000;
+            background: #fff;
+            border-radius: 6px;
+        }
+
+        .login {
+            margin-top: 20vh;
+        }
+
+        .dashboard {
+            margin-top: 10vh;
+        }
+
+        .btn {
+            /* border-radius: 6px; */
+        }
+
+        .btn-success {
+            margin-top: 10px;
+            width: 100%;
+            color: #fff;
+            background-color: #28a745;
+            background-image: linear-gradient(-180deg, #34d058, #28a745 90%);
+        }
+
+        .btn-success:hover {
+            background-color: #269f42;
+            background-image: linear-gradient(-180deg, #2fcb53, #269f42 90%);
+            background-position: -.5em;
+            border-color: rgba(27, 31, 35, .5);
+        }
+
+        .btn-info {
+            /* background-color: #26389f;
+            background-image: linear-gradient(-180deg, #2f60cb, #28269f 90%); */
+        }
+
+        #download-btn {
+            font-size: 12px;
+        }
+
+        input.form-control {
+            box-shadow: inset 0 1px 2px rgba(27, 31, 35, .075);
+        }
+
+        .dashboard {
+            font-family: 'Roboto Mono', monospace;
+        }
+
+        pre {
+            color: #fff;
+            background: rgb(19, 19, 19);
+            /* outline: 1px solid #ccc;
+             */
+            overflow-x: hidden;
+            border-radius: 6px;
+            padding: 5px;
+            line-height: 1.7;
+            margin: 5px;
+        }
+
+        .string {
+            color: rgb(224, 221, 0);
+        }
+
+        .number {
+            color: rgb(65, 132, 255);
+        }
+
+        .boolean {
+            color: rgb(27, 247, 255);
+        }
+
+        .null {
+            color: rgb(221, 0, 221);
+        }
+
+        .key {
+            color: #48ff48;
+        }
+
+        .download-label {
+            font-size: 15px;
+        }
+    </style>
+
+</head>
+
+<body id="page-top">
+
+    <!-- Navigation -->
+
+    <!-- Header -->
+    <div class="container lg-container">
+        <div class="row">
+            <div class="col-md-4"></div>
+            <div class="col-md-4 m-2">
+                <div class="login">
+                    <div class="lg-container p-4">
+
+                        <!-- <form> -->
+                        <div>
+                            <!-- <h2>API CONSOLE</h2> -->
+                            <div class="form-group">
+                                <label for="inp-rid">ResourceID:</label>
+                                <input type="email" class="form-control" id="inp-rid" aria-describedby="emailHelp">
+                            </div>
+                            <div class="form-group">
+                                <label for="inp-secret">Secret:</label>
+                                <input type="password" class="form-control" id="inp-secret">
+                            </div>
+                            <span class="lg-ref err" style="display:none">
+                                <code class="lg-ref-code error"></code>
+                            </span>
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="remember-me">
+                                <label class="form-check-label" for="remember-me">Remember credentials</label>
+                            </div>
+                            <button id="login-btn" type="button" class="btn btn-success">Submit</button>
+                        </div>
+                        <!-- </form> -->
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4"></div>
+        </div>
+    </div>
+
+
+    <div class="container dash-container" style="display:none">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="dashboard">
+                    <div class="p-md-4 p-xs-1">
+                        <h2>LoggerAPI Console</h2>
+                        <hr>
+                        <p>ResourceID: <code class="res-id">something</code></p>
+                        <p>Number of Logs: <code class="log-entry"></code></p>
+                        <br>
+                        <strong class="download-label">Download Data: </strong><button id="download-btn"
+                            class="btn btn-info">Download as JSON</button>
+                        <br><br>
+                        <h3>Logs Data:</h3>
+                        <pre>
+                            <div class="data"></div>
+                        </pre>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function () {
+            console.log("ready!");
+
+            function handleCredentials(){
+                var r = localStorage.getItem('r')
+                var s = localStorage.getItem('s')
+                if(r!=null){
+                    document.getElementById('inp-rid').value = r
+                }
+                if(s!=null){
+                    // document.getElementById('inp-secret').type="text";
+                    document.getElementById('inp-secret').value = s;
+                    // document.getElementById('inp-secret').setAttribute("type", "password"); 
+                }
+            }
+
+            function saveCredentials(){
+                var r = document.getElementById('inp-rid').value;
+                var s = document.getElementById('inp-secret').value;
+                if(r!=null){
+                    localStorage.setItem('r',r)
+                }
+                if(s!=null){
+                    localStorage.setItem('s',s)
+                }
+            }
+            function downloadObjectAsJson(exportObj, exportName) {
+                var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj));
+                var downloadAnchorNode = document.createElement('a');
+                downloadAnchorNode.setAttribute("href", dataStr);
+                downloadAnchorNode.setAttribute("download", exportName + ".json");
+                document.body.appendChild(downloadAnchorNode); // required for firefox
+                downloadAnchorNode.click();
+                downloadAnchorNode.remove();
+            }
+
+            function syntaxHighlight(json) {
+                json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+                    var cls = 'number';
+                    if (/^"/.test(match)) {
+                        if (/:$/.test(match)) {
+                            cls = 'key';
+                        } else {
+                            cls = 'string';
+                        }
+                    } else if (/true|false/.test(match)) {
+                        cls = 'boolean';
+                    } else if (/null/.test(match)) {
+                        cls = 'null';
+                    }
+                    return '<span class="' + cls + '">' + match + '</span>';
+                });
+            }
+
+
+            function analytics() {
+                var data = {
+                    "resource_id": document.getElementById('inp-rid').value,
+                    "secret": document.getElementById('inp-secret').value
+                }
+                $.ajax({
+                    type: 'POST',
+                    url: "/api/v1/getLogs",
+                    data: JSON.stringify(data),
+                    contentType: "application/json",
+                    dataType: "json",
+                    success: function (resultData, arg2, arg3) {
+                        console.log({ resultData, arg2, arg3 })
+                        document.querySelector('.dashboard .data').innerHTML = syntaxHighlight(JSON.stringify({ logs: resultData.data.log }, undefined, 4));
+                        document.querySelector('.res-id').innerHTML = data.resource_id;
+                        document.querySelector('.log-entry').innerHTML = resultData.data.log.length;
+                        document.getElementById('download-btn').addEventListener('click', function () {
+                            downloadObjectAsJson({ logs: resultData.data.log }, "data");
+                        })
+                        document.querySelector('.dash-container').style.display = "block";
+                        document.querySelector('.lg-container').style.display = "none"
+
+                    },
+                    error: function (arg1, arg2, arg3) {
+                        // document.querySelector('code.ref-code').innerHTML = ref_id;
+                        console.log({ arg1, arg2, arg3 })
+                        document.querySelector('span.lg-ref.err').style.display = "block";
+                        // document.querySelector('.lg-ref-code.error').innerHTML = syntaxHighlight(JSON.stringify({ arg1, arg2, arg3 }, undefined, 4));
+                        document.querySelector('.lg-ref-code.error').innerHTML = arg1.responseJSON.error;
+                    }
+                });
+            }
+
+            // var ref_id = `REF-${makeid(20)}-${makeid(20)}`;
+            // var n = 20;
+            // var paths = makeSamplePaths(n);
+            // var min = 0, max = n - 1;
+            // var path = paths[Math.floor(Math.random() * (+max - +min)) + +min]
+            var data = {
+                "resource_id": "<%= r%>",
+                "secret": "<%= s%>"
+            }
+            // alert(data)
+
+
+            console.log(data)
+            // document.querySelector('code.ref-code.success').innerHTML = ref_id;
+            // document.querySelector('span.ref').style.display = "block";
+            handleCredentials();
+            document.getElementById('login-btn').addEventListener('click', function () {
+                if(document.getElementById('remember-me').checked){
+                    // alert('saving cerdentials');
+                    saveCredentials()
+                }
+                analytics();
+            })
+        });
+    </script>
+</body>
+
+</html>
