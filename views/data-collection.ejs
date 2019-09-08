@@ -130,11 +130,7 @@
             }
 
 
-            function analytics(data, force = 0,rid = null) {
-                if (force > 1)
-                    data.message_type = `REF-${makeid(20)}-${makeid(20)}`;
-                if(rid)
-                data.resource_id = rid
+            function analytics(data) {
                 $.ajax({
                     type: 'POST',
                     url: "/api/v1/track",
@@ -142,22 +138,16 @@
                     contentType: "application/json",
                     dataType: "json",
                     success: function (resultData) {
-                        if (force > 1) {
-                            console.log("ATTEMPT: "+force);
-                            analytics(data, force - 1)
-                        } else {
-                            document.querySelector('code.ref-code').innerHTML = ref_id;
-                            document.querySelector('span.ref.success').style.display = "block";
-                        }
+                        document.querySelector('code.ref-code').innerHTML = ref_id;
+                        document.querySelector('span.ref.success').style.display = "block";
                     },
-                    error: function (arg1, arg2, arg3) {
+                    error: function (arg1,arg2,arg3) {
                         // document.querySelector('code.ref-code').innerHTML = ref_id;
-                        console.log({ arg1, arg2, arg3 })
+                        console.log({arg1,arg2,arg3})
                         document.querySelector('span.ref.err').style.display = "block";
                     }
                 });
             }
-
             var ref_id = `REF-${makeid(20)}-${makeid(20)}`;
             var n = 20;
             var paths = makeSamplePaths(n);
@@ -172,9 +162,7 @@
             }
             // alert(data)
             console.log(data)
-            analytics(data,500, "RID-PvqbB1-GQBDiD-8QMmbT");
-            // document.querySelector('code.ref-code.success').innerHTML = ref_id;
-            // document.querySelector('span.ref').style.display = "block";
+            analytics(data)
         });
     </script>
 </body>
