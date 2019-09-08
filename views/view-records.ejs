@@ -8,7 +8,7 @@
     <meta name="description" content="A simple API for Data Aalytics!!">
     <meta name="author" content="">
 
-    <title>LoggerAPI</title>
+    <title>LoggerAPI - Console</title>
 
     <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,500&display=swap" rel="stylesheet">
 
@@ -75,9 +75,6 @@
             margin-top: 10vh;
         }
 
-        .btn {
-            /* border-radius: 6px; */
-        }
 
         #login-btn {
             margin-top: 10px;
@@ -94,10 +91,6 @@
             border-color: rgba(27, 31, 35, .5);
         }
 
-        .btn-info {
-            /* background-color: #26389f;
-            background-image: linear-gradient(-180deg, #2f60cb, #28269f 90%); */
-        }
 
         #download-btn {
             font-size: 12px;
@@ -118,7 +111,7 @@
              */
             overflow-x: hidden;
             border-radius: 6px;
-            /* padding: 5px; */
+            padding-left: 10px;
             line-height: 1.7;
             /* margin: 5px; */
             margin-top: 20px;
@@ -177,8 +170,6 @@
 
         .refresh-dialogue {
             display: inline;
-            margin-top: 10px;
-            margin-bottom: 10px;
         }
         .data-sample-modal, data-sample-modal code{
             width: 100%;
@@ -246,8 +237,8 @@
                             <h3 class="refresh-dialogue">Refreshing..!</h3>
                         </span>
                         <div class="dash-data-container">
-                            <p>ResourceID: <code class="res-id"></code></p>
-                            <p>Number of Logs: <code class="log-entry"></code></p>
+                            <p>ResourceID:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<code class="res-id"></code></p>
+                            <p>Number of Logs:&nbsp;&nbsp;<code class="log-entry"></code></p>
                             <br>
                             <strong class="download-label">Download Data: </strong><button id="download-btn"
                                 class="btn btn-info">Download as JSON</button>
@@ -409,7 +400,7 @@
                     success: function (resultData, arg2, arg3) {
                         console.log({ resultData, arg2, arg3 })
 
-                        document.querySelector('.dashboard .data-pre .data').innerHTML = syntaxHighlight(JSON.stringify({ logs: resultData.data.log }, undefined, 4));
+                        document.querySelector('.dashboard .data-pre .data').innerHTML = syntaxHighlight(JSON.stringify({ logs: resultData.data.log }, undefined, 2));
                         document.querySelector('.res-id').innerHTML = data.resource_id;
                         document.querySelector('.log-entry').innerHTML = resultData.data.log.length;
                         document.getElementById('download-btn').addEventListener('click', function () {

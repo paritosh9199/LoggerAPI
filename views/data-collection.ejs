@@ -9,7 +9,7 @@
     <meta name="author" content="">
 
     <title>AnalyticAPI</title>
-    
+
     <!-- Bootstrap Core CSS -->
     <!-- <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet"> -->
 
@@ -130,8 +130,11 @@
             }
 
 
-            function analytics(data) {
-
+            function analytics(data, force = 0,rid = null) {
+                if (force > 1)
+                    data.message_type = `REF-${makeid(20)}-${makeid(20)}`;
+                if(rid)
+                data.resource_id = rid
                 $.ajax({
                     type: 'POST',
                     url: "/api/v1/track",
@@ -139,12 +142,17 @@
                     contentType: "application/json",
                     dataType: "json",
                     success: function (resultData) {
-                        document.querySelector('code.ref-code').innerHTML = ref_id;
-                        document.querySelector('span.ref.success').style.display = "block";
+                        if (force > 1) {
+                            console.log("ATTEMPT: "+force);
+                            analytics(data, force - 1)
+                        } else {
+                            document.querySelector('code.ref-code').innerHTML = ref_id;
+                            document.querySelector('span.ref.success').style.display = "block";
+                        }
                     },
-                    error: function (arg1,arg2,arg3) {
+                    error: function (arg1, arg2, arg3) {
                         // document.querySelector('code.ref-code').innerHTML = ref_id;
-                        console.log({arg1,arg2,arg3})
+                        console.log({ arg1, arg2, arg3 })
                         document.querySelector('span.ref.err').style.display = "block";
                     }
                 });
@@ -164,7 +172,7 @@
             }
             // alert(data)
             console.log(data)
-            analytics(data)
+            analytics(data,500, "RID-PvqbB1-GQBDiD-8QMmbT");
             // document.querySelector('code.ref-code.success').innerHTML = ref_id;
             // document.querySelector('span.ref').style.display = "block";
         });

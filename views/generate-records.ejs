@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="A simple API for Data Aalytics!!">
+    <meta name="author" content="">
+
+    <title>LoggerAPI - Generate Records</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,500&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <style>
+        .masthead {
+            margin-top: 20vh;
+        }
+
+        body {
+            /* color: #fff; */
+            overflow-x: hidden;
+            font-family: 'Roboto Mono', monospace;
+            /* font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol; */
+            font-size: 14px;
+            line-height: 1.5;
+            color: #24292e;
+
+            background: #03A9F4;
+            /* background: rgb(255, 255, 255); */
+            width: 100vw;
+        }
+
+        .btn-primary {
+            background: #536DFE;
+            /* -webkit-box-shadow: 3px 3px 5px 6px #ccc;
+            -moz-box-shadow: 3px 3px 5px 6px #ccc;
+            box-shadow: 3px 3px 5px 6px #ccc; */
+        }
+
+        code,
+        .data-sample-modal .data2 {
+            background: rgb(19, 19, 19);
+            color: #02c0ad;
+            padding: 6px;
+            border-radius: 6px;
+        }
+
+        code.ref-code {
+            color: #02c0ad;
+        }
+
+        code.lg-ref-code.error {
+            color: #ff0000;
+        }
+
+        span.ref p {
+            font-size: 16px;
+        }
+
+        .login,
+        .dashboard {
+            color: #000;
+            background: #fff;
+            border-radius: 6px;
+        }
+
+        .login {
+            /* margin-top: 1vh; */
+        }
+
+        .dashboard {
+            margin-top: 10vh;
+        }
+
+
+        #login-btn {
+            margin-top: 10px;
+            width: 100%;
+            color: #fff;
+            background-color: #28a745;
+            background-image: linear-gradient(-180deg, #34d058, #28a745 90%);
+        }
+
+        #login-btn:hover {
+            background-color: #269f42;
+            background-image: linear-gradient(-180deg, #2fcb53, #269f42 90%);
+            background-position: -.5em;
+            border-color: rgba(27, 31, 35, .5);
+        }
+
+
+        #download-btn {
+            font-size: 12px;
+        }
+
+        input.form-control {
+            box-shadow: inset 0 1px 2px rgba(27, 31, 35, .075);
+        }
+
+        .dashboard {
+            font-family: 'Roboto Mono', monospace;
+        }
+
+        pre {
+            color: #fff;
+            background: rgb(19, 19, 19);
+            /* outline: 1px solid #ccc;
+             */
+            overflow-x: hidden;
+            border-radius: 6px;
+            padding-left: 10px;
+            line-height: 1.7;
+            /* margin: 5px; */
+            margin-top: 20px;
+        }
+
+        .string {
+            color: rgb(224, 221, 0);
+        }
+
+        .number {
+            color: rgb(65, 132, 255);
+        }
+
+        .boolean {
+            color: rgb(27, 247, 255);
+        }
+
+        .null {
+            color: rgb(221, 0, 221);
+        }
+
+        .key {
+            color: #48ff48;
+        }
+
+        .download-label {
+            font-size: 15px;
+        }
+
+        #refresh-btn,
+        #lg-show-btn,
+        #lg-hide-btn {
+            float: right;
+            /* margin-left:auto;  */
+            /* margin-right:0; */
+        }
+
+        .type-anim {
+            border-right: .15em solid rgb(22, 22, 22);
+            width: auto;
+            animation:
+                blink-caret .75s step-end infinite;
+        }
+
+        @keyframes blink-caret {
+
+            from,
+            to {
+                border-color: transparent
+            }
+
+            50% {
+                border-color: rgb(15, 15, 15);
+            }
+        }
+
+        .refresh-dialogue {
+            display: inline;
+        }
+
+        .data-sample-modal,
+        data-sample-modal code {
+            width: 100%;
+        }
+
+        .data-sample-modal {
+            margin-top: 20px;
+        }
+    </style>
+
+</head>
+
+<body id="page-top">
+
+    <!-- Navigation -->
+
+    <!-- Header -->
+    <div class="container lg-container">
+        <div class="row">
+            <div class="col-md-4"></div>
+            <div class="col-md-4 m-2">
+                <div class="login">
+                    <div class="lg-container p-4">
+
+                        <!-- <form> -->
+                        <div>
+                            <!-- <h2>API CONSOLE</h2> -->
+                            <div class="form-group">
+                                <label for="inp-rid">ResourceID:</label>
+                                <input type="text" class="form-control" id="inp-rid" aria-describedby="emailHelp">
+                            </div>
+                            <div class="form-group">
+                                <label for="inp-rt">IP Variations:</label>
+                                <input type="number" class="form-control" id="inp-ip">
+                                <small class="form-text text-muted">Default: 0(Infinite)</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="inp-rt">Route/Path Variations:</label>
+                                <input type="number" class="form-control" id="inp-rv">
+                                <small class="form-text text-muted">Default: 20 Ex: <code>/path${number}</code></small>
+
+                            </div>
+                            <div class="form-group">
+                                <label for="inp-hv">Hash Variations:</label>
+                                <input type="number" class="form-control" id="inp-hv">
+                                <small class="form-text text-muted">Default: 0(Infinite)</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="inp-ct">Number of Logs to generate:</label>
+                                <input type="number" class="form-control" id="inp-ct">
+                                <small class="form-text text-muted">Default: 20</small>
+                            </div>
+                            <span class="lg-ref err" style="display:none">
+                                <code class="lg-ref-code error"></code>
+                            </span>
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="remember-me">
+                                <label class="form-check-label" for="remember-me">Remember credentials</label>
+                            </div>
+                            <button id="start-btn" type="button" class="btn btn-success">Start</button>
+                        </div>
+                        <!-- </form> -->
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4"></div>
+        </div>
+    </div>
+
+
+    <div class="container dash-container" style="display:none">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="dashboard">
+                    <div class="px-sm-3 px-md-4 px-lg-4 py-sm-3 py-md-4 py-lg-4 p-3 p-4">
+                        <div style="width:100%">
+                            <h2 class="mb-2" style="display:inline">LoggerAPI Data Generator</h2>
+                        </div>
+                        <hr>
+                        <div class="dash-data-container">
+                            <p>ResourceID:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<code class="res-id"></code></p>
+                            <p>Attempt:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<code class="attempt"></code>
+                            </p>
+                            <!-- <p>Route:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<code
+                                    class="route"></code></p> -->
+                            <p>ReferenceCODE:&nbsp;&nbsp;<code class="ref-code"></code></p>
+
+                            <p>IP:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp<code class="ip-ds"></code></p>
+                            <p>Path:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<code
+                                    class="path-list"></code></p>
+
+
+                            <p>Hash:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<code
+                                    class="hash-list"></code></p>
+
+
+                            <div style="width:100%">
+                                <h3 class="mb-2" style="display:inline">Response Data:</h2>
+                            </div>
+
+                            <div class="div-data-pre">
+                                <pre class="data-pre">
+                                    <span class="data"></span>
+                                </pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function () {
+            console.log("ready!");
+
+            function _(q) {
+                return document.querySelector(q);
+            }
+            function makeSamplePaths(n) {
+                var paths = []
+
+                for (var i = 0; i < n; i++) {
+                    paths.push(`/path${i + 1}`);
+                }
+
+                return paths;
+            }
+
+            function makeSampleHashes(n) {
+                var hashes = []
+
+                for (var i = 0; i < n; i++) {
+                    hashes.push(`${makeID(32, 1)}`);
+                }
+
+                return hashes;
+            }
+
+            function makeID(len = 6, lower = 0) {
+                var text = "";
+                var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+                if (lower == 1)
+                    possible = "abcdefghijklmnopqrstuvwxyz0123456789";
+                for (var i = 0; i < len / 2; i++) {
+                    text += possible.charAt(Math.floor(Math.random() * possible.length));
+                }
+                return text;
+            }
+
+            function makeIP(n) {
+                var ips = []
+
+                for (var i = 0; i < n; i++) {
+                    ips.push(`${makeFakeIP()}`);
+                }
+
+                return ips;
+            }
+
+            function makeFakeIP() {
+                var min = 1, max = 255;
+                var ip = `${Math.floor(Math.random() * (+max - +min)) + +min}.`
+                ip += `${Math.floor(Math.random() * (+max - +min)) + +min}.`
+                ip += `${Math.floor(Math.random() * (+max - +min)) + +min}.`
+                ip += `${Math.floor(Math.random() * (+max - +min)) + +min}`
+                return ip;
+            }
+
+            function handleCredentials() {
+                var r = localStorage.getItem('rs')
+                _("#inp-ip").value = 0
+                _("#inp-rv").value = 20
+                _("#inp-hv").value = 0
+                _("#inp-ct").value = 20
+                if (r != null) {
+                    document.getElementById('inp-rid').value = r
+                }
+            }
+
+            function saveCredentials() {
+                var r = document.getElementById('inp-rid').value
+                if (r != null) {
+                    localStorage.setItem('rs', r)
+                }
+            }
+
+            function syntaxHighlight(json) {
+                json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+                    var cls = 'number';
+                    if (/^"/.test(match)) {
+                        if (/:$/.test(match)) {
+                            cls = 'key';
+                        } else {
+                            cls = 'string';
+                        }
+                    } else if (/true|false/.test(match)) {
+                        cls = 'boolean';
+                    } else if (/null/.test(match)) {
+                        cls = 'null';
+                    }
+                    return '<span class="' + cls + '">' + match + '</span>';
+                });
+            }
+
+            function analytics(data, force = 0, ips, paths, hashes, n = null) {
+                if (n == null)
+                    n = force
+                if (force > 1)
+                    data.message_type = `REF-${makeID(20)}-${makeID(20)}`;
+
+
+                if (ips)
+                    data.ip = ips[Math.floor(Math.random() * (ips.length))]
+                else
+                    if (force > 0)
+                        data.ip = makeFakeIP()
+
+                if (paths)
+                    data.route_path = paths[Math.floor(Math.random() * (paths.length))]
+                else
+                    if (force > 0)
+                        data.route_path = `/path${Math.floor(Math.random() * (20))}`
+
+                if (hashes)
+                    data.hash = hashes[Math.floor(Math.random() * (hashes.length))]
+                else
+                    if (force > 0)
+                        data.hash = makeID(32, 1);
+
+                _('.res-id').innerHTML = data.resource_id;
+
+                $.ajax({
+                    type: 'POST',
+                    url: "/api/v1/track",
+                    data: JSON.stringify(data),
+                    contentType: "application/json",
+                    dataType: "json",
+                    success: function (resultData, arg2, arg3) {
+                        // console.log({ resultData, arg2, arg3 })
+                        _('.lg-container').style.display = "none";
+                        _('.dash-container').style.display = "block";
+                        _('.attempt').innerHTML = `${n - force + 1}/${n}`;
+                        _('.ref-code').innerHTML = data.message_type;
+                        console.log("ATTEMPT: " + (n - force + 1) + "/" + n);
+
+                        _('.path-list').innerHTML = (data.route_path);
+                        _('.ip-ds').innerHTML = data.ip;
+                        _('.hash-list').innerHTML = (data.hash);
+
+                        _('.dashboard .data-pre .data').innerHTML = "<br>"+syntaxHighlight(JSON.stringify({ data: resultData.data }, undefined, 2));
+                        // document.querySelector('.res-id').innerHTML = data.resource_id;
+
+                        if (force > 1)
+                            analytics(data, force - 1, ips, paths, hashes, n);
+
+                    },
+                    error: function (arg1, arg2, arg3) {
+                        // document.querySelector('code.ref-code').innerHTML = ref_id;
+                        console.log({ arg1, arg2, arg3 })
+                        _('.lg-container').style.display = "block";
+                        _('.dash-container').style.display = "none";
+                        document.querySelector('span.lg-ref.err').style.display = "block";
+                        // document.querySelector('.lg-ref-code.error').innerHTML = syntaxHighlight(JSON.stringify({ arg1, arg2, arg3 }, undefined, 4));
+                        document.querySelector('.lg-ref-code.error').innerHTML = arg1.responseJSON.error;
+                    }
+                });
+            }
+
+
+
+            handleCredentials();
+            document.getElementById('start-btn').addEventListener('click', function () {
+                if (document.getElementById('remember-me').checked) {
+                    saveCredentials()
+                }
+
+                var rid = _("#inp-rid").value
+                var ip = _("#inp-ip").value
+                var rv = _("#inp-rv").value
+                var hv = _("#inp-hv").value
+                var ct = _("#inp-ct").value
+
+                var ref_id = `REF-${makeID(20)}-${makeID(20)}`;
+                var ips, paths, hashes;
+                if (ip > 0)
+                    ips = makeIP(ip)
+                if (rv > 0)
+                    paths = makeSamplePaths(rv);
+                if (hv > 0)
+                    hashes = makeSampleHashes(hv);
+                // var min = 0, max = n - 1;
+                if (rv > 0)
+                    var path = paths[Math.floor(Math.random() * (paths.length))]
+                if (hv > 0)
+                    var hash = hashes[Math.floor(Math.random() * (hashes.length))]
+
+
+                var data = {
+                    "ip": makeFakeIP(),
+                    "hash": (hash) ? hash : makeID(32, 1),
+                    "message_type": ref_id,
+                    "method": "get",
+                    "route_path": (path) ? path : `/path${Math.floor(Math.random() * (20))}`,
+                    "resource_id": rid
+                }
+                analytics(data, ct, ips, paths, hashes);
+            })
+
+            // var ref_id = `REF-${makeID(20)}-${makeID(20)}`;
+            // var n = 20;
+            // var paths = makeSamplePaths(n);
+            // var hashes = makeSampleHashes(n);
+            // var min = 0, max = n - 1;
+            // var path = paths[Math.floor(Math.random() * (+max - +min)) + +min]
+            // var hash = hashes[Math.floor(Math.random() * (+max - +min)) + +min]
+
+            // analytics(data, 5, "RID-PvqbB1-GQBDiD-8QMmbT");
+
+        });
+    </script>
+</body>
+
+</html>

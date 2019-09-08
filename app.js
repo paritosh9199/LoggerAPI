@@ -87,6 +87,13 @@ app.get('/console', (req, res) => {
     res.render('view-records', data);
 });
 
+app.get('/generateRecords', (req, res) => {
+    // res.redirect('/fhash');
+    // res.send("hey")
+    
+    res.render('generate-records');
+});
+
 
 
 /**
@@ -239,10 +246,10 @@ app.post('/api/:version/track', (req, res) => {
             var data = {
                 "timestamp": Date.now(),
                 "message_type": (req.body.message_type != null) ? req.body.message_type : "info",
-                "ip": getIp(req),
+                "ip": (req.body.ip)?req.body.ip:getIp(req),
                 "method": (req.body.method != null) ? req.body.method : "get",
                 "route_path": req.body.route_path,
-                "hash": req.fingerprint.hash
+                "hash": (req.body.hash)?req.body.hash:req.fingerprint.hash
             }
 
             if (!data.route_path) {
@@ -265,7 +272,8 @@ app.post('/api/:version/track', (req, res) => {
                                 if (doc) {
                                     res.status(200).send({
                                         success: true,
-                                        data: doc.toJSON()
+                                        // data: doc.toJSON()
+                                        data
                                     })
                                 } else {
                                     res.status(400).send({
